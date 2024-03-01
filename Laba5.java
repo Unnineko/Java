@@ -7,14 +7,27 @@ public class Laba5 {
         return 3*x + 5;
     }
     
-    public double calculate2(int a, int b) {
-        return (a + b) / (a - b);
+    public double calculate2(double a, double b) {
+        if (a - b == 0) {
+            System.out.println("Деление на 0 недопустимо");
+            return 0;
+        } else {
+            return (a + b) / (a - b);
+        }
     }
-    
-    public double calculate3(int a, int b, int x) {
-        return Math.pow(a*x/b, 2);
+    public double calculate3(int a, int x, int b) {
+        double result = 1;
+        if (b != 0) {
+            int factorial = a * x / b;
+            for (int i = 1; i <= factorial; i++) {
+                result *= i;
+            }
+        } else {
+            System.out.println("Деление на 0 недопустимо");
+            return 0;
+        }
+        return result;
     }
-    
     public static void main(String[] args) {
         Laba5 calculator = new Laba5();
         
