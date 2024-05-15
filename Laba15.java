@@ -17,9 +17,10 @@ public class Laba15 {
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter("ip_addresses.txt", true));
                 writer.write(matcher.group() + "\n");
+                writer.close();
                 System.out.println("IP-адрес успешно записан в файл.");
             } catch (IOException e) {
-                System.err.println("Ошибка при записи в файл: " + e.getMessage());
+                System.out.println("Ошибка при записи в файл: " + e.getMessage());
             }
         } else {
             System.out.println("IP-адрес не найден в строке.");
