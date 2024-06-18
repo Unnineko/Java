@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Laba3 {
+public class laba3 {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
