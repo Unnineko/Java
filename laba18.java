@@ -16,13 +16,13 @@ public class laba18 {
             array[i] = in.nextInt();
         }
 
-        System.out.print("Введите способ сортировки(> - по убыванию; < - по возрастанию): ");
+        System.out.print("Введите способ сортировки(! - по убыванию; ^ - по возрастанию): ");
         String oper = in.next();
 
-        if(oper.equals("<")){
+        if(oper.equals("^")){
             Expression func = (a,b) -> a > b;
             bubleSort(array, func);
-        } else if (oper.equals(">")) {
+        } else if (oper.equals("!")) {
             Expression func = (a,b) -> a < b;
             bubleSort(array, func);
         } else System.out.println("Неправильно введён способ сортировки");
