@@ -33,9 +33,9 @@ public class laba18 {
         }
     }
     public static void bubleSort(int[] sortArr,Expression func){
-            for (int i = 0; i < sortArr.length - 1; i++) { //проход по  строкам
-                for (int j = 0; j < sortArr.length - i - 1; j++) { //проход по неотсортированному массиву
-                    if (func.isEqual(sortArr[j],sortArr[j + 1])) { //замена элементов в зависимости от лямбды
+            for (int i = 0; i < sortArr.length - 1; i++) {
+                for (int j = 0; j < sortArr.length - i - 1; j++) {
+                    if (func.isEqual(sortArr[j],sortArr[j + 1])) {
                         int temp = sortArr[j];
                         sortArr[j] = sortArr[j + 1];
                         sortArr[j + 1] = temp;
