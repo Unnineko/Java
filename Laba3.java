@@ -1,68 +1,48 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class laba3 {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Введите количество строк: ");
-        int rows = scanner.nextInt();
+        final int MAX_SMS_COUNT = 1000; // максимально допустимое количество сообщений
+        final int TOTAL_PAIRS = 16; // общее количество пар
 
-        System.out.print("Введите количество столбцов: ");
-        int cols = scanner.nextInt();
+        // запрос у пользователя о количестве SMS-сообщений для голосования
+        int totalVotes = 0;
+        System.out.println("Введите количество до 1000 сообщений включительно");
+        while (true) {
+            totalVotes = scanner.nextInt(); // получение введенного количества сообщений
+            if (totalVotes <= MAX_SMS_COUNT) break; // проверка что общее количество голосов не превышает максимальное 
+            else System.out.println("Ошибка ввода! Требуется ввести число, которое не будет превышать 1000:");
+        }
 
-        int[][] arr = new int[rows][cols];
+        // HashMap для хранения голосов
+        HashMap<Integer, Integer> voteCounts = new HashMap<>();
 
-        System.out.println("Введите элементы массива:");
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                arr[i][j] = scanner.nextInt();
+        // инициализация голоса 0 для всех пар
+        for (int i = 1; i <= TOTAL_PAIRS; i++) {
+            voteCounts.put(i, 0);
+        }
+
+        System.out.println("За какие номера пар Вы хотите проголосовать?");
+        for (int i = 0; i < totalVotes; i++) {
+            int selectedPair = scanner.nextInt();
+            if (selectedPair >= 1 && selectedPair <= TOTAL_PAIRS) {
+                voteCounts.put(selectedPair, voteCounts.get(selectedPair) + 1);
+            } else {
+                System.out.println("Ошибка! Номер пары должен быть в диапазоне от 1 до 16.");
             }
         }
 
-        System.out.println("До сортировки: ");
-        printArray(arr);
+        // список для хранения пар и их голосов для последующей сортировки
+        List<Map.Entry<Integer, Integer>> sortedPairs = new ArrayList<>(voteCounts.entrySet());
 
-        for (int i = 0; i < arr.length; i++) {
-            quickSort(arr[i], 0, arr[i].length - 1);
-        }
+        // список пар по количеству голосов в порядке убывания
+        sortedPairs.sort((entryA, entryB) -> entryB.getValue().compareTo(entryA.getValue()));
 
-        System.out.println("После сортировки: ");
-        printArray(arr);
-    }
-
-    public static void quickSort(int[] arr, int low, int high) {
-        if (low < high) {
-            int pivotIndex = partition(arr, low, high);
-            quickSort(arr, low, pivotIndex - 1);
-            quickSort(arr, pivotIndex + 1, high);
-        }
-    }
-
-    public static int partition(int[] arr, int low, int high) {
-        int pivot = arr[high];
-        int i = low - 1;
-
-        for (int j = low; j < high; j++) {
-            if (arr[j] < pivot) {
-                i++;
-                int temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
-        }
-
-        int temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
-
-        return i + 1;
-    }
-
-    public static void printArray(int[][] arr) {
-        for (int[] row : arr) {
-            System.out.println(Arrays.toString(row));
+        System.out.println("Итоги голосования:");
+        for (Map.Entry<Integer, Integer> pair : sortedPairs) {
+            System.out.println("Пара " + pair.getKey() + ": " + pair.getValue() + " голосов");
         }
     }
 }
