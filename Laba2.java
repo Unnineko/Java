@@ -13,10 +13,10 @@ public class laba2 {
         while (set.size() < arraySize) { //размер множества должен быть меньше заданного размера
             set.add(random.nextInt(maxValue) + 1); // генерация случайного числа от 1 до maxValue (включительно) и добавление его в set
         }
-        searchMaxProduct(set);
+        searchMax(set);
     }
     // метод для поиска максимального произведения среди чисел, которые кратны заданным значениям
-    public static void searchMaxProduct(HashSet<Integer> set) {
+    public static void searchMax(HashSet<Integer> set) {
         int max14 = -1; // для хранения максимального числа, кратного 14
         int max2 = -1;  // для хранения максимального числа, кратного 2
         int max7 = -1;  // для хранения максимального числа, кратного 7
@@ -30,11 +30,11 @@ public class laba2 {
                 max7 = num;
             }
         }
-        int maxProduct = Math.max(max14, (max2 != -1 && max7 != -1) ? max2 * max7 : -1);
-        if (maxProduct == -1) {
+        int maxResult = Math.max(max14, (max2 != -1 && max7 != -1) ? max2 * max7 : -1);
+        if (maxResult == -1) {
             System.out.println("Не найдено подходящих чисел.");
         } else {
-            System.out.println("Максимальное произведение: " + maxProduct);
+            System.out.println("Максимальное произведение: " + maxResult);
         }
     }
 }
