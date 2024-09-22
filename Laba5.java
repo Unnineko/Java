@@ -14,9 +14,8 @@ public class Laba5 {
                 Thread.sleep(2000);
             }
 
-            //удаление процессов
             for (int i = 0; i < 3; i++) {
-                processes[i].destroy(); // Завершение процесса
+                processes[i].destroy(); //завершение процесса
                 System.out.println("Завершен процесс блокнота: " + (i + 1));
             }
 
