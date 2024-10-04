@@ -1,87 +1,47 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Laba9 {
-    public static class Student {
-        private String fullName;
-        private String admissionDate;
-        private String address;
-        private String phone;
-        private int course;
-        private String faculty;
-    
-        public Student(String fullName, String admissionDate, String address, String phone, int course, String faculty) {
-            this.fullName = fullName;
-            this.admissionDate = admissionDate;
-            this.address = address;
-            this.phone = phone;
-            this.course = course;
-            this.faculty = faculty;
-        }
-    
-        public String getFullName() {
-            return fullName;
-        }
-    
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
-        }
-    
-        public String getAdmissionDate() {
-            return admissionDate;
-        }
-    
-        public void setAdmissionDate(String admissionDate) {
-            this.admissionDate = admissionDate;
-        }
-    
-        public String getAddress() {
-            return address;
-        }
-    
-        public String getPhone() {
-            return phone;
-        }
-    
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-    
-        public int getCourse() {
-            return course;
-        }
-    
-        public void setCourse(int course) {
-            this.course = course;
-        }
-    
-        public String getFaculty() {
-            return faculty;
-        }
-    }
 
     public static void main(String[] args) {
-        Student[] students = new Student[3];
-        students[0] = new Student("Манушина П.В.", "2020-09-01", "Кижеватова, д.14", "79870774153", 1, "Экономический");
-        students[1] = new Student("Огурцова П.А.", "2019-08-15", "Лермонтова д.54", "79876535167", 2, "Юриспруденция");
-        students[2] = new Student("Шаров К.П.", "2021-01-10", "Калинина, д.17 кв.14", "79876553927", 1, "Экономический");
+        String filePath = "\"F:\\123.svc.txt\"";
+        String outputFilePath = "statistics.txt";
+        
+        //проверка расширения файла
+        if (!filePath.endsWith(".txt") && !filePath.endsWith(".svc")) {
+            System.err.println("Неподдерживаемый формат файла. Можно использовать только файлы с расширением .txt или .svc.");
+            return;
+        }
 
- System.out.println("ФИО всех студентов:");
- for (Student student : students) {
-     System.out.println(student.getFullName());
- }
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
+             FileWriter writer = new FileWriter(outputFilePath)) {
 
- String targetFaculty = "Экономический";
- System.out.println("\nСтуденты факультета " + targetFaculty + ":");
- for (Student student : students) {
-     if (student.getFaculty().equals(targetFaculty)) {
-         System.out.println(student.getFullName());
-     }
- }
+            StringBuilder text = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                text.append(line).append(" ");
+            }
 
- String targetYear = "2020г.";
- System.out.println("\nСтуденты, поступившие после " + targetYear + ":");
- for (Student student : students) {
-     if (student.getAdmissionDate().compareTo(targetYear) > 0) {
-         System.out.println(student.getFullName());
-     }
- }
-}
+            int totalCharacters = text.toString().length();
+            int charactersWithoutSpaces = text.toString().replaceAll("\\s+", "").length();
+            int wordCount = text.toString().split("\\s+").length;
+
+            System.out.println("Статистика текста:");
+            System.out.println("Общее количество символов: " + totalCharacters);
+            System.out.println("Количество символов без пробелов: " + charactersWithoutSpaces);
+            System.out.println("Количество слов: " + wordCount);
+
+            writer.write("Статистика текста:\n");
+            writer.write("Общее количество символов: " + totalCharacters + "\n");
+            writer.write("Количество символов без пробелов: " + charactersWithoutSpaces + "\n");
+            writer.write("Количество слов: " + wordCount + "\n");
+
+            System.out.println("Статистика записана в файл " + outputFilePath);
+
+        } catch (IOException e) {
+            System.err.println("Ошибка при чтении или записи файла: " + e.getMessage());
+        }
     }
+}
