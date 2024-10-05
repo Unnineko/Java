@@ -1,98 +1,94 @@
-class Animal {
-    String food;
-    String location;
-
-    public Animal(String food, String location) {
-        this.food = food;
-        this.location = location;
-    }
-
-    public void makeNoise() {
-        System.out.println("Животное шумит");
-    }
-
-    public void eat() {
-        System.out.println("Животное ест");
-    }
-
-    public void sleep() {
-        System.out.println("Животное спит");
-    }
-}
-
-class Dog extends Animal {
-    int FullYears;
-
-    public Dog(String food, String location, int FullYears) {
-        super(food, location);
-        this.FullYears = FullYears;
-    }
-
-    @Override
-    public void makeNoise() {
-        System.out.println("Собака лает");
-    }
-
-    @Override
-    public void eat() {
-        System.out.println("Собака ест собачий корм");
-    }
-}
-
-class Cat extends Animal {
-    int NumberOfKittens;
-
-    public Cat(String food, String location, int NumberOfKittens) {
-        super(food, location);
-        this.NumberOfKittens = NumberOfKittens;
-    }
-
-    @Override
-    public void makeNoise() {
-        System.out.println("Кошка мяукает");
-    }
-
-    @Override
-    public void eat() {
-        System.out.println("Кошка доедает селёдку");
-    }
-}
-
-class Horse extends Animal {
-    String breed;
-
-    public Horse(String food, String location, String breed) {
-        super(food, location);
-        this.breed = breed;
-    }
-
-    @Override
-    public void makeNoise() {
-        System.out.println("Лошадь фыркает");
-    }
-
-    @Override
-    public void eat() {
-        System.out.println("Лошадь ест ячмень");
-    }
-}
-
-class Veterinarian {
-    public void treatAnimal(Animal animal) {
-        System.out.println("Еда: " + animal.food);
-        System.out.println("Местоположение: " + animal.location);
-    }
-}
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Laba10 {
-    public static void main(String[] args) {
-        Dog dog = new Dog("Собачий корм", "Частный дом", 7);
-        Cat cat = new Cat("Селёдка", "Квартира", 5);
-        Horse horse = new Horse("Ячмень", "Ферма", "Андалузская");
 
-        Veterinarian veterinarian = new Veterinarian();
-        veterinarian.treatAnimal(dog);
-        veterinarian.treatAnimal(cat);
-        veterinarian.treatAnimal(horse);
+    //метод для последовательного копирования файлов
+    private static void copyFilesSequentially(String sourceFile1, String sourceFile2, String destFile1, String destFile2) {
+        try {
+            //замерка времени начала операции копирования
+            long start = System.nanoTime();
+
+            //копирование первого файла с помощью метода Files.copy()
+            Files.copy(Paths.get(sourceFile1), Paths.get(destFile1));
+
+            //замерка времени окончания копирования первого файла
+            long end = System.nanoTime();
+            System.out.println("Время копирования файла 1: " + (end - start) / 1_000_000 + " мс");
+
+            //замерка времени начала копирования второго файла
+            start = System.nanoTime();
+
+            //копирование второго файла с помощью метода Files.copy()
+            Files.copy(Paths.get(sourceFile2), Paths.get(destFile2));
+
+            //замерка времени окончания копирования второго файла
+            end = System.nanoTime();
+            System.out.println("Время копирования файла 2: " + (end - start) / 1_000_000 + " мс");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //метод для параллельного копирования файлов
+    private static void copyFilesInParallel(String sourceFile1, String sourceFile2, String destFile1, String destFile2) {
+        ExecutorService executor = Executors.newFixedThreadPool(2); //пул потоков с фиксированным количеством потоков, равным 2. 
+        try {
+            //замерка времени начала операции копирования
+            long start = System.nanoTime();
+
+            executor.submit(() -> {
+                try {
+                    //копирование первого файла с помощью метода Files.copy()
+                    Files.copy(Paths.get(sourceFile1), Paths.get(destFile1));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            executor.submit(() -> {
+                try {
+                    //копирование второго файла с помощью метода Files.copy()
+                    Files.copy(Paths.get(sourceFile2), Paths.get(destFile2));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            //останов приема новых задач
+            executor.shutdown();
+
+            //ожидание завершения задач
+            while (!executor.isTerminated()) {
+            }
+
+            //замерка времени окончания операции копирования
+            long end = System.nanoTime();
+            System.out.println("Общее время параллельного копирования: " + (end - start) / 1_000_000 + " мс");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        //пути к исходным и целевым файлам
+        String sourceFile1 = "F:\\123.txt";
+        String sourceFile2 = "F:\\4321.txt";
+        String destFile1 = "F:\\путь_для_первого_файла.txt";
+        String destFile2 = "F:\\путь_для_второго_файла.txt";
+
+        System.out.println("Последовательное копирование:");
+        //метод для последовательного копирования файлов
+        copyFilesSequentially(sourceFile1, sourceFile2, destFile1, destFile2);
+
+        System.out.println("\nПараллельное копирование:");
+        //метод для параллельного копирования файлов
+        copyFilesInParallel(sourceFile1, sourceFile2, destFile1, destFile2);
     }
 }
