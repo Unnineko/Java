@@ -1,64 +1,40 @@
-interface User {
-    void setPassword(String password);
-    String getPassword();
-    void setLogin(String login);
-    String getLogin();
-}
-
-abstract class People implements User {
-    protected String fullName;
-    protected int age;
-    protected String position;
-    protected String login;
-    protected String password;
-
-    public People(String fullName, int age, String position) {
-        this.fullName = fullName;
-        this.age = age;
-        this.position = position;
-    }
-
-    @Override
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getLogin() {
-        return this.login;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-}
-
-class Teacher extends People {
-    public Teacher(String fullName, int age, String position) {
-        super(fullName, age, position);
-    }
-}
-
-class Student extends People {
-    public Student(String fullName, int age, String position) {
-        super(fullName, age, position);
-    }
-}
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Laba12 {
     public static void main(String[] args) {
-        Teacher teacher1 = new Teacher("Пауков Полина Павловна", 40, "Педагог");
-        teacher1.setLogin("paukova_paulina");
-        teacher1.setPassword("p4uk0v4");
+        String filePath = "C:\\Users\\umine\\Documents\\Java\\24_demo.txt";
 
-        Student student1 = new Student("Петров Петр Петрович", 20, "Студент");
-        student1.setLogin("petrov_petr");
-        student1.setPassword("p3tr0v");
+        int maxSequenceLength = 0; //максимальная длина последовательности
+        int currentSequenceLength = 0; //текущая длина последовательности
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            int ch;
+            while ((ch = br.read()) != -1) {
+                char currentChar = (char) ch;
+                if (currentChar == 'X') {
+                    currentSequenceLength++; //увеличение текущей длины
+                } else {
+                    if (currentSequenceLength > maxSequenceLength) {
+                        maxSequenceLength = currentSequenceLength; //обновление максимальной длины
+                    }
+                    currentSequenceLength = 0; //сброс текущей длины, если не 'X'
+                }
+            }
+            //проверка одной последней последовательности в конце файла
+            if (currentSequenceLength > maxSequenceLength) {
+                maxSequenceLength = currentSequenceLength;
+            }
+        } catch (IOException e) {
+            System.out.println("Ошибка чтения файла: " + e.getMessage());
+        }
+
+        //проверка был ли найден хотя бы один символ 'X'
+        if (maxSequenceLength > 0) {
+            System.out.println("Длина самой длинной последовательности 'X': " + maxSequenceLength);
+        } else {
+            System.out.println("В файле не найдено символов 'X'.");
+        }
     }
 }
