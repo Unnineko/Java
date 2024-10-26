@@ -1,38 +1,49 @@
 import java.io.*;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class Laba15 {
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        System.out.print("Введите строку: ");
-        String ip = input.nextLine();
-        String regex = "(25[0-5]|2[0-4]\\d|[01]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[01]?\\d?\\d)){3}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(ip);
-        
-        BufferedWriter writer = null;
-        
-        if (matcher.find()) {
-            System.out.println("Найденный IP-адрес: " + matcher.group());
-            try {
-                writer = new BufferedWriter(new FileWriter("ip_addresses.txt", true));
-                writer.write(matcher.group() + "\n");
-                System.out.println("IP-адрес успешно записан в файл.");
-            } catch (IOException e) {
-                System.out.println("Ошибка при записи в файл: " + e.getMessage());
-            } finally {
-                try {
-                    if (writer != null) {
-                        writer.close();
+        try (BufferedReader reader = new BufferedReader(new FileReader("1234.txt"))) {
+            int totalOccupiedSeats = Integer.parseInt(reader.readLine()); //считывание количества занятых мест
+
+            List<int[]> occupiedSeats = new ArrayList<>();
+
+            for (int i = 0; i < totalOccupiedSeats; i++) {
+                String[] line = reader.readLine().split(" "); //чтение номера ряда и места
+                occupiedSeats.add(new int[]{Integer.parseInt(line[0]), Integer.parseInt(line[1])});
+            }
+
+            //сортировка по номеру ряда по убыванию и по номеру места по возрастанию
+            occupiedSeats.sort(Comparator.comparingInt((int[] seat) -> seat[0]).reversed()
+                    .thenComparingInt(seat -> seat[1]));
+
+            int bestRow = -1, bestSeat = -1;
+
+            //проходим по всем занятым местам
+            for (int index = 1; index < occupiedSeats.size(); index++) {
+                //проверка если ряд совпадает с предыдущим
+                if (occupiedSeats.get(index)[0] == occupiedSeats.get(index - 1)[0]) {
+                    int currentRow = occupiedSeats.get(index)[0];
+                    int currentSeat = occupiedSeats.get(index)[1];
+                    int previousSeat = occupiedSeats.get(index - 1)[1];
+
+                    //проверка, есть ли два соседних места с занятыми местами слева и справа
+                    if (currentSeat - previousSeat == 1) {
+                        //проверка на наличие занятых мест слева и справа
+                        if (occupiedSeats.stream().anyMatch(seat -> seat[0] == currentRow && seat[1] == previousSeat - 1) &&
+                            occupiedSeats.stream().anyMatch(seat -> seat[0] == currentRow && seat[1] == currentSeat + 1)) {
+                            bestRow = currentRow;
+                            bestSeat = previousSeat; //наименьший номер из пары
+                            break; //выход тк нашли подходящий ряд
+                        }
                     }
-                } catch (IOException e) {
-                    System.out.println("Ошибка при закрытии файла: " + e.getMessage());
                 }
             }
-        } else {
-            System.out.println("IP-адрес не найден в строке.");
+
+            System.out.println(bestRow + " " + bestSeat);
+
+        } catch (IOException e) {
+            System.out.println("Ошибка ввода-вывода: " + e.getMessage());
         }
     }
 }
